@@ -6,28 +6,34 @@
 //
 
 import XCTest
+//#if canImport(simd)
+//import simd
+//#else
 @testable import Simd_Swift
+//#endif
 
 class simd_double3Tests: XCTestCase {
+    func testSimd_double3() throws {
+        let a = simd_double3(x: 1.0, y: 2.0, z: 3.0)
+        let b = simd_double3(x: 2.0, y: 2.0, z: 2.0)
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        XCTAssertEqual(-a, simd_double3(x: -1.0, y: -2.0, z: -3.0))
+        XCTAssertEqual(a + b, simd_double3(x: 3.0, y: 4.0, z: 5.0))
+        XCTAssertEqual(a - b, simd_double3(x: -1.0, y: 0.0, z: 1.0))
+        XCTAssertEqual(a * b, simd_double3(x: 2.0, y: 4.0, z: 6.0))
+        XCTAssertEqual(a / b, simd_double3(x: 0.5, y: 1.0, z: 1.5))
+
+        XCTAssertEqual(simd_double3(x: 0.0, y: 0.0, z: 0.0), .zero)
+        XCTAssertEqual(simd_double3(x: 1.0, y: 1.0, z: 1.0), .one)
+
+        XCTAssertEqual(a + 2.0, simd_double3(x: 3.0, y: 4.0, z: 5.0))
+        XCTAssertEqual(a - 2.0, simd_double3(x: -1.0, y: 0.0, z: 1.0))
+        XCTAssertEqual(a * 2.0, simd_double3(x: 2.0, y: 4.0, z: 6.0))
+        XCTAssertEqual(a / 2.0, simd_double3(x: 0.5, y: 1.0, z: 1.5))
+
+        XCTAssertEqual(2.0 + b, simd_double3(x: 4.0, y: 4.0, z: 4.0))
+        XCTAssertEqual(2.0 - b, simd_double3(x: 0.0, y: 0.0, z: 0.0))
+        XCTAssertEqual(2.0 * b, simd_double3(x: 4.0, y: 4.0, z: 4.0))
+        XCTAssertEqual(2.0 / b, simd_double3(x: 1.0, y: 1.0, z: 1.0))
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }
