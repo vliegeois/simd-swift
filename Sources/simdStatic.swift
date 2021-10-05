@@ -26,11 +26,11 @@ public func rsqrt(_ x: Double) -> Double { return 1.0 / sqrt(x) }
 // MARK: - simd_double3
 
 public func simd_length_squared(_ __x: simd_double3) -> Double {
-    return sqrt(__x.x*__x.x + __x.y*__x.y + __x.z*__x.z)
+    return __x.x*__x.x + __x.y*__x.y + __x.z*__x.z
 }
 
 public func simd_normalize(_ __x: simd_double3) -> simd_double3 {
-    let magnitude = simd_length_squared(__x)
+    let magnitude = sqrt(simd_length_squared(__x))
     return .init(__x.x / magnitude, __x.y / magnitude, __x.z / magnitude)
 }
 

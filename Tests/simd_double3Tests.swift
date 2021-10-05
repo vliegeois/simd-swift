@@ -7,9 +7,9 @@
 
 import XCTest
 //#if canImport(simd)
-import simd
+//import simd
 //#else
-//@testable import SimdSwift
+@testable import SimdSwift
 //#endif
 
 class simd_double3Tests: XCTestCase {
@@ -53,7 +53,7 @@ class simd_double3Tests: XCTestCase {
         XCTAssertEqual(1.0 / sqrt(25.0), inverseSqrt)
 
         let normalise = a * rsqrt(simd_length_squared(a))
-        XCTAssertEqual(simd_normalize(a), normalise)
+        XCTAssertEqual(simd_normalize(a), normalise, accuracy: 1e-14)
     }
 }
 
