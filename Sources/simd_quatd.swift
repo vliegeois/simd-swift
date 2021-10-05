@@ -35,13 +35,17 @@ public struct simd_quatd: Equatable {
         vector = .init(imag, real)
     }
 
-//    /// A quaternion whose action is a rotation by `angle` radians about `axis`.
-//    ///
-//    /// - Parameters:
-//    ///   - angle: The angle to rotate by measured in radians.
-//    ///   - axis: The axis to rotate around.
-//    public init(angle: Double, axis: SIMD3<Double>)
-//
+    /// A quaternion whose action is a rotation by `angle` radians about `axis`.
+    ///
+    /// - Parameters:
+    ///   - angle: The angle to rotate by measured in radians.
+    ///   - axis: The axis to rotate around.
+    public init(angle: Double, axis: SIMD3<Double>) {
+        let s = sin(angle/2.0)
+        let axis = simd_normalize(axis)
+        vector = .init(axis.x * s, axis.y * s, axis.z * s, cos(angle/2.0))
+    }
+
 //    /// A quaternion whose action rotates the vector `from` onto the vector `to`.
 //    public init(from: SIMD3<Double>, to: SIMD3<Double>)
 //
@@ -57,11 +61,14 @@ public struct simd_quatd: Equatable {
     /// The imaginary (vector) part of `self`.
     public var imag: SIMD3<Double> { .init(vector.x, vector.y, vector.z) }
 
-//    /// The angle (in radians) by which `self`'s action rotates.
-//    public var angle: Double { get }
-//
-//    /// The normalized axis about which `self`'s action rotates.
-//    public var axis: SIMD3<Double> { get }
+    /// The angle (in radians) by which `self`'s action rotates.
+    public var angle: Double { 2.0 * acos(vector.w) }
+
+    /// The normalized axis about which `self`'s action rotates.
+    public var axis: SIMD3<Double> {
+        let a = sin(angle/2.0)
+        return .init(vector.x / a, vector.y / a, vector.z / a)
+    }
 
     /// The conjugate of `self`.
     public var conjugate: simd_quatd {
