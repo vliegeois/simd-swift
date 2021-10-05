@@ -9,6 +9,20 @@ import Darwin
 
 // Will define all static helpers for simd
 
+// MARK: - Double
+
+/// Reciprocal square root.
+public func rsqrt(_ x: Double) -> Double { return 1.0 / sqrt(x) }
+
+//public func rsqrt(_ x: Double) -> Double { // Not used as x = 25.0 result 0.19968952216623773 instead of 0.2
+//    let halfx = 0.5 * x
+//    var i = x.bitPattern
+//    i = 0x5fe6eb50c7b537a9 - (i >> 1)
+//    var y = Double(bitPattern: i)
+//    y = y * (1.5 - (halfx * y * y))
+//    return y
+//}
+
 // MARK: - simd_double3
 
 public func simd_length_squared(_ __x: simd_double3) -> Double {
