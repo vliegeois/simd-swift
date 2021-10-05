@@ -66,12 +66,14 @@ public struct SIMD3<Scalar>: Equatable where Scalar : FloatingPoint {
     /// A vector with one in all lanes.
     public static var one: Self { .init(x: .one, y: .one, z: .one) }
 
-    // MARK: - Min/Max
+    // MARK: - Min/Max/Sum
 
     /// The least element in the vector.
     public func min() -> Scalar { return Swift.min(x, y, z) }
     /// The greatest element in the vector.
     public func max() -> Scalar { return Swift.max(x, y, z) }
+    /// Returns the sum of the scalars in the vector.
+    public func sum() -> Scalar { return x + y + z }
 
     // MARK: - Negative
 

@@ -103,12 +103,19 @@ public struct simd_quatd: Equatable {
         return lhs.vector == rhs.vector
     }
 
-//    /// The sum of `lhs` and `rhs`.
-//    public static func + (lhs: simd_quatd, rhs: simd_quatd) -> simd_quatd
-//
-//    /// Add `rhs` to `lhs`.
-//    public static func += (lhs: inout simd_quatd, rhs: simd_quatd)
-//
+    /// The sum of `lhs` and `rhs`.
+    public static func + (lhs: simd_quatd, rhs: simd_quatd) -> simd_quatd {
+        return .init(ix: lhs.vector.x + rhs.vector.x,
+                     iy: lhs.vector.y + rhs.vector.y,
+                     iz: lhs.vector.z + rhs.vector.z,
+                     r: lhs.vector.w + rhs.vector.w)
+    }
+
+    /// Add `rhs` to `lhs`.
+    public static func += (lhs: inout simd_quatd, rhs: simd_quatd) {
+        lhs = lhs + rhs
+    }
+
 //    /// The difference of `lhs` and `rhs`.
 //    public static func - (lhs: simd_quatd, rhs: simd_quatd) -> simd_quatd
 //

@@ -45,5 +45,8 @@ class simd_double3Tests: XCTestCase {
         let bCrossA = simd_double3(x: 2.0, y: -4.0, z: 2.0)
         XCTAssertEqual(simd_cross(a, b), aCrossB)
         XCTAssertEqual(simd_cross(b, a), bCrossA)
+
+        XCTAssertEqual(a.sum(), 6.0)
+        XCTAssertEqual(simd_double3(x: 2.0, y: 4.0, z: 6.0).sum(), 12.0)
     }
 }
