@@ -12,6 +12,7 @@
 public struct simd_double3x3: Equatable {
     public var columns: (simd_double3, simd_double3, simd_double3)
 
+    /// Creates a matrix with zero in all columns.
     public init() {
         columns = (.zero, .zero, .zero)
     }
