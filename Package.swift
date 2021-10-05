@@ -3,12 +3,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "Simd-Swift",
+    name: "simd-swift",
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "Simd-Swift",
-            targets: ["Simd-Swift"]),
+            name: "SimdSwift",
+            targets: ["SimdSwift"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -18,12 +18,12 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "Simd-Swift",
+            name: "SimdSwift",
             dependencies: [],
             path: "Sources"),
         .testTarget(
-            name: "Simd-SwiftTests",
-            dependencies: ["Simd-Swift"],
+            name: "SimdSwiftTests",
+            dependencies: ["SimdSwift"],
             path: "Tests"),
     ]
 )

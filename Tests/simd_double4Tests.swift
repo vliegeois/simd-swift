@@ -9,7 +9,7 @@ import XCTest
 //#if canImport(simd)
 //import simd
 //#else
-@testable import Simd_Swift
+@testable import SimdSwift
 //#endif
 
 class simd_double4Tests: XCTestCase {
