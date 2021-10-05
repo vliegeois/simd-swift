@@ -5,7 +5,11 @@
 //  Created by Damien Noël Dubuisson on 05/10/2021.
 //
 
+#if os(macOS) || os(iOS)
 import Darwin
+#elseif os(Linux) || CYGWIN
+import Glibc
+#endif
 
 public struct simd_quatd: Equatable {
     public var vector: simd_double4

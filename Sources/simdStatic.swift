@@ -5,7 +5,11 @@
 //  Created by Damien Noël Dubuisson on 05/10/2021.
 //
 
+#if os(macOS) || os(iOS)
 import Darwin
+#elseif os(Linux) || CYGWIN
+import Glibc
+#endif
 
 // Will define all static helpers for simd
 
