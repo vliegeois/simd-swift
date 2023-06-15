@@ -9,6 +9,8 @@
 //import simd
 //#else
 
+public typealias double3x3 = simd_double3x3
+
 public struct simd_double3x3: Equatable {
     public var columns: (simd_double3, simd_double3, simd_double3)
 
@@ -94,21 +96,41 @@ public struct simd_double3x3: Equatable {
 
     /// Access to individual columns.
     public subscript(column: Int) -> SIMD3<Double> {
-        switch column {
-        case 0: return columns.0
-        case 1: return columns.1
-        case 2: return columns.2
-        default: return .zero
+        get {
+            switch column {
+            case 0: return columns.0
+            case 1: return columns.1
+            case 2: return columns.2
+            default: return .zero
+            }
+        }
+        set {
+            switch column {
+            case 0: columns.0 = newValue
+            case 1: columns.1 = newValue
+            case 2: columns.2 = newValue
+            default: return
+            }
         }
     }
 
     /// Access to individual elements.
     public subscript(column: Int, row: Int) -> Double {
-        switch column {
-        case 0: return columns.0[row]
-        case 1: return columns.1[row]
-        case 2: return columns.2[row]
-        default: return .zero
+        get {
+            switch column {
+            case 0: return columns.0[row]
+            case 1: return columns.1[row]
+            case 2: return columns.2[row]
+            default: return .zero
+            }
+        }
+        set {
+            switch column {
+            case 0: columns.0[row] = newValue
+            case 1: columns.1[row] = newValue
+            case 2: columns.2[row] = newValue
+            default: return
+            }
         }
     }
 

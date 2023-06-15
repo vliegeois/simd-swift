@@ -18,11 +18,21 @@ public struct SIMD3<Scalar>: Equatable where Scalar : FloatingPoint {
 
     /// Accesses the scalar at the specified position.
     public subscript(index: Int) -> Scalar {
-        switch index {
-        case 0: return x
-        case 1: return y
-        case 2: return z
-        default: return .zero
+        get {
+            switch index {
+            case 0: return x
+            case 1: return y
+            case 2: return z
+            default: return .zero
+            }
+        }
+        set {
+            switch index {
+            case 0: x = newValue
+            case 1: y = newValue
+            case 2: z = newValue
+            default: return
+            }
         }
     }
 
@@ -53,13 +63,13 @@ public struct SIMD3<Scalar>: Equatable where Scalar : FloatingPoint {
     }
 
     /// The first element of the vector.
-    public let x: Scalar
+    public var x: Scalar
 
     /// The second element of the vector.
-    public let y: Scalar
+    public var y: Scalar
 
     /// The third element of the vector.
-    public let z: Scalar
+    public var z: Scalar
 
     /// A vector with zero in all lanes.
     public static var zero: Self { .init() }

@@ -9,6 +9,8 @@
 //import simd
 //#else
 
+public typealias double4x4 = simd_double4x4
+
 public struct simd_double4x4: Equatable {
     public var columns: (simd_double4, simd_double4, simd_double4, simd_double4)
 
@@ -111,23 +113,45 @@ public struct simd_double4x4: Equatable {
 
     /// Access to individual columns.
     public subscript(column: Int) -> SIMD4<Double> {
-        switch column {
-        case 0: return columns.0
-        case 1: return columns.1
-        case 2: return columns.2
-        case 3: return columns.3
-        default: return .zero
+        get {
+            switch column {
+            case 0: return columns.0
+            case 1: return columns.1
+            case 2: return columns.2
+            case 3: return columns.3
+            default: return .zero
+            }
+        }
+        set {
+            switch column {
+            case 0: columns.0 = newValue
+            case 1: columns.1 = newValue
+            case 2: columns.2 = newValue
+            case 3: columns.3 = newValue
+            default: return
+            }
         }
     }
 
     /// Access to individual elements.
     public subscript(column: Int, row: Int) -> Double {
-        switch column {
-        case 0: return columns.0[row]
-        case 1: return columns.1[row]
-        case 2: return columns.2[row]
-        case 3: return columns.3[row]
-        default: return .zero
+        get {
+            switch column {
+            case 0: return columns.0[row]
+            case 1: return columns.1[row]
+            case 2: return columns.2[row]
+            case 3: return columns.3[row]
+            default: return .zero
+            }
+        }
+        set {
+            switch column {
+            case 0: columns.0[row] = newValue
+            case 1: columns.1[row] = newValue
+            case 2: columns.2[row] = newValue
+            case 3: columns.3[row] =  newValue
+            default: return
+            }
         }
     }
 
