@@ -16,6 +16,17 @@ public struct SIMD4<Scalar>: Equatable where Scalar : FloatingPoint {
     /// The number of scalars in the vector.
     public let scalarCount: Int = 4
 
+    /// Accesses the scalar at the specified position.
+    public subscript(index: Int) -> Scalar {
+        switch index {
+        case 0: return x
+        case 1: return y
+        case 2: return z
+        case 3: return w
+        default: return .zero
+        }
+    }
+    
     /// Creates a vector with zero in all lanes.
     public init() {
         x = .zero

@@ -23,16 +23,16 @@ public struct simd_double3x3: Equatable {
 
     /// Initialize matrix to have `scalar` on main diagonal, zeros elsewhere.
     public init(_ scalar: Double) {
-        columns = (.init(x: scalar, y: 0.0, z: 0.0),
-                   .init(x: 0.0, y: scalar, z: 0.0),
-                   .init(x: 0.0, y: 0.0, z: scalar))
+        columns = (.init(x: scalar, y: .zero, z: .zero),
+                   .init(x: .zero, y: scalar, z: .zero),
+                   .init(x: .zero, y: .zero, z: scalar))
     }
 
     /// Initialize matrix to have specified `diagonal`, and zeros elsewhere.
     public init(diagonal: SIMD3<Double>) {
-        columns = (.init(x: diagonal.x, y: 0.0, z: 0.0),
-                   .init(x: 0.0, y: diagonal.y, z: 0.0),
-                   .init(x: 0.0, y: 0.0, z: diagonal.z))
+        columns = (.init(x: diagonal.x, y: .zero, z: .zero),
+                   .init(x: .zero, y: diagonal.y, z: .zero),
+                   .init(x: .zero, y: .zero, z: diagonal.z))
     }
 
     /// Initialize matrix to have specified `columns`.
