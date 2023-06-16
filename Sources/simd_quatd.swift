@@ -171,6 +171,7 @@ public struct simd_quatd: Equatable {
     /// The imaginary (vector) part of `self`.
     public var imag: SIMD3<Double> { .init(vector.x, vector.y, vector.z) }
     
+    public var angleAxis: (angle: Double, axis: SIMD3<Double>) {
     //    Q = cos(theta/2) + sin(theta/2) * v
     //    where v is a unit vector along the rotation axis
     //    We want theta from -pi -> pi
@@ -179,31 +180,31 @@ public struct simd_quatd: Equatable {
     //    cos >0 while sin > 0
     //        If cos <0, Q' = -Q: correspond to have theta + 2pi
     //        We can allow theta to be -pi -> pi if we restrict n to be in 4 octant instead of the 8 octant.
-    //        var cosine = self.scalar
-    //        var vector = self.vector
-    //        if cosine < 0.0 {
-    //             // reverse the sign of the scalar and vector part of the Quaternion
-    //            cosine = -cosine
-    //            vector = -vector
-    //        }
-    //        var sine = length(vector)
-    //        if abs(sine) < 1.0e-8 {
-    //            // zero vector part
-    //            return Rotation(angle: 0.0, andAxis: SIMD3<Double>())
-    //        }
-    //        // determine in which octant is v
-    //        vector *= (1.0 / sine) // the vector is normalized
-    //        let octantX = Double(signOf: vector.x, magnitudeOf: 1.0)
-    //        let octantY = Double(signOf: vector.y, magnitudeOf: 1.0)
-    //        let octantZ = Double(signOf: vector.z, magnitudeOf: 1.0)
-    //        let octant: Int = Int(octantX + octantY + octantZ)
-    //        if octant < 0 {
-    //            vector = -vector
-    //            sine = -sine
-    //        }
-    //        let thetahalf = atan2(sine, cosine)
-    //        return Rotation(angle: thetahalf * 2.0, andAxis: vector)
-    //    }
+        var cosine = self.real
+        var vector = self.imag
+        if cosine < 0.0 {
+            // reverse the sign of the scalar and vector part of the Quaternion
+            cosine = -cosine
+            vector = -vector
+        }
+        var sine = SimdSwift.length(vector)
+        if abs(sine) < 1.0e-8 {
+            // zero vector part
+            return (angle: 0.0, axis: SIMD3<Double>())
+        }
+        // determine in which octant is v
+        vector *= (1.0 / sine) // the vector is normalized
+        let octantX = Double(signOf: vector.x, magnitudeOf: 1.0)
+        let octantY = Double(signOf: vector.y, magnitudeOf: 1.0)
+        let octantZ = Double(signOf: vector.z, magnitudeOf: 1.0)
+        let octant: Int = Int(octantX + octantY + octantZ)
+        if octant < 0 {
+            vector = -vector
+            sine = -sine
+        }
+        let thetahalf = atan2(sine, cosine)
+        return (angle: thetahalf * 2.0, axis: vector)
+    }
     
     /// The angle (in radians) by which `self`'s action rotates.
     public var angle: Double { 2.0 * acos(vector.w) }

@@ -30,12 +30,14 @@ class simd_quatdTests: XCTestCase {
     func testSimd_quatdAngleAxis() throws {
         let v = normalize(SIMD3<Double>(x: 1, y: -2, z: -1.5))
         let a = simd_quatd(angle: Double.pi/3, axis: v)
+        let aa = a.angleAxis
         XCTAssertEqual(a.length, 1.0, accuracy: 1e-13)
         XCTAssertEqual(a.real, sqrt(3)/2, accuracy: 1e-13)
         XCTAssertEqual(a.imag, 0.5*v, accuracy: 1e-10)
         XCTAssertEqual(a.angle, Double.pi/3, accuracy: 1e-13)
         XCTAssertEqual(a.axis, v, accuracy: 1e-10)
-        
+        XCTAssertEqual(aa.angle, -Double.pi/3, accuracy: 1e-13)
+        XCTAssertEqual(aa.axis, -v, accuracy: 1e-10)
     }
     func testSimd_quatdFromTo() throws {
         let a = simd_double3(x: 1, y: 0, z: 0)
