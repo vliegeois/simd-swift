@@ -62,6 +62,34 @@ public struct SIMD3<Scalar>: SIMD where Scalar : FloatingPoint {
         self.z = z
     }
 
+    /// A vector with the specified value in all lanes.
+    public init(repeating value: Scalar) {
+        self.init(x: value, y: value, z: value)
+    }
+    
+    /// Creates a vector from the given sequence.
+    ///
+    /// - Precondition: `scalars` must have the same number of elements as the
+    ///   vector type.
+    ///
+    /// - Parameter scalars: The elements to use in the vector.
+    public init(_ scalars: Array<Scalar>) {
+        var values = scalars
+        guard let val0 = values.safeRemoveFirst() else {
+            self = .init()
+            return
+        }
+        guard let val1 = values.safeRemoveFirst() else {
+            self.init(x: val0, y: .zero, z: .zero)
+            return
+        }
+        guard let val2 = values.safeRemoveFirst() else {
+            self.init(x: val0, y: val1, z: .zero)
+            return
+        }
+        self.init(x: val0, y: val1, z: val2)
+    }
+    
     /// The first element of the vector.
     public var x: Scalar
 

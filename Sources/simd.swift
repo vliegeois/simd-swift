@@ -12,6 +12,20 @@ public protocol SIMD<Scalar>: Equatable {
 //}
 //extension SIMD where Scalar : FloatingPoint {
 
+    /// Creates a vector with zero in all lanes.
+    init()
+    
+    /// A vector with the specified value in all lanes.
+    init(repeating value: Scalar)
+    
+    /// Creates a vector from the given sequence.
+    ///
+    /// - Precondition: `scalars` must have the same number of elements as the
+    ///   vector type.
+    ///
+    /// - Parameter scalars: The elements to use in the vector.
+    init(_ scalars: Array<Scalar>)
+    
     /// A vector with zero in all lanes.
     static var zero: Self { get }
 

@@ -162,7 +162,7 @@ public struct simd_quatd: Equatable {
     // Construct a quaternion from `rotationMatrix`.
     public init(_ rotationMatrix: double4x4) {
         let cols = rotationMatrix.columns
-        self.init(.init(SIMD3(x: cols.0.x, y: cols.0.y, z: cols.0.z), SIMD3(x: cols.1.x, y: cols.1.y, z: cols.1.z), SIMD3(x: cols.2.x, y: cols.2.y, z: cols.2.z)))
+        self.init(double3x3(SIMD3(x: cols.0.x, y: cols.0.y, z: cols.0.z), SIMD3(x: cols.1.x, y: cols.1.y, z: cols.1.z), SIMD3(x: cols.2.x, y: cols.2.y, z: cols.2.z)))
     }
 
     /// The real (scalar) part of `self`.
@@ -320,5 +320,12 @@ extension double3x3 {
             .init(x: 2.0*(qy*qx+q0*qz), y: q0*q0-qx*qx+qy*qy-qz*qz, z: 2.0*(qy*qz-q0*qx)),
             .init(x: 2.0*(qz*qx-q0*qy), y: 2.0*(qz*qy+q0*qx), z: q0*q0-qx*qx-qy*qy+qz*qz)
         ])
+    }
+}
+
+extension double4x4 {
+    public init(_ quatd: simd_quatd) {
+        let rot = double3x3(quatd)
+        self.init(SIMD4(rot.columns.0, .zero), SIMD4(rot.columns.1, .zero), SIMD4(rot.columns.2, .zero), SIMD4(.zero, 1.0))
     }
 }
