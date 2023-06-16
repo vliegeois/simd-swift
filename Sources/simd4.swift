@@ -12,7 +12,7 @@
 public typealias simd_double4 = SIMD4<Double>
 public typealias simd_float4 = SIMD4<Float>
 
-public struct SIMD4<Scalar>: Equatable where Scalar : FloatingPoint {
+public struct SIMD4<Scalar>: SIMD where Scalar : FloatingPoint {
     /// The number of scalars in the vector.
     public let scalarCount: Int = 4
 
@@ -99,7 +99,9 @@ public struct SIMD4<Scalar>: Equatable where Scalar : FloatingPoint {
     public func min() -> Scalar { return Swift.min(x, y, z, w) }
     /// The greatest element in the vector.
     public func max() -> Scalar { return Swift.max(x, y, z, w) }
-
+    /// Returns the sum of the scalars in the vector.
+    public func sum() -> Scalar { return x + y + z + w }
+    
     // MARK: - Negative
 
     prefix public static func - (rhs: Self) -> Self {
