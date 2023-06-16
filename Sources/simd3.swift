@@ -166,4 +166,13 @@ public struct SIMD3<Scalar>: Equatable where Scalar : FloatingPoint {
     }
 }
 
+extension SIMD3 where Scalar: BinaryFloatingPoint {
+    /// Creates a vector from another one
+    public init<T: BinaryFloatingPoint>(_ v: SIMD3<T>) {
+        x = Scalar(v.x)
+        y = Scalar(v.y)
+        z = Scalar(v.z)
+    }
+}
+
 //#endif

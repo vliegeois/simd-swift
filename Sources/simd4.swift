@@ -181,4 +181,14 @@ public struct SIMD4<Scalar>: Equatable where Scalar : FloatingPoint {
     }
 }
 
+extension SIMD4 where Scalar: BinaryFloatingPoint {
+    /// Creates a vector from another one
+    public init<T: BinaryFloatingPoint>(_ v: SIMD4<T>) {
+        x = Scalar(v.x)
+        y = Scalar(v.y)
+        z = Scalar(v.z)
+        w = Scalar(v.w)
+    }
+}
+
 //#endif
