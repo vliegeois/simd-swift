@@ -45,6 +45,7 @@ public struct simd_quatd: Equatable {
     ///   - angle: The angle to rotate by measured in radians.
     ///   - axis: The axis to rotate around.
     public init(angle: Double, axis: SIMD3<Double>) {
+        //    Q = cos(theta/2) + sin(theta/2) * v
         let s = sin(angle/2.0)
         let axis = simd_normalize(axis)
         vector = .init(axis.x * s, axis.y * s, axis.z * s, cos(angle/2.0))
@@ -64,7 +65,41 @@ public struct simd_quatd: Equatable {
 
     /// The imaginary (vector) part of `self`.
     public var imag: SIMD3<Double> { .init(vector.x, vector.y, vector.z) }
-
+    
+    //    Q = cos(theta/2) + sin(theta/2) * v
+    //    where v is a unit vector along the rotation axis
+    //    We want theta from -pi -> pi
+    //    But theta,n gives the same quaternion as -theta,-n
+    //    Therefore, theta: 0 -> pi, theta/2: 0 -> pi/2
+    //    cos >0 while sin > 0
+    //        If cos <0, Q' = -Q: correspond to have theta + 2pi
+    //        We can allow theta to be -pi -> pi if we restrict n to be in 4 octant instead of the 8 octant.
+    //        var cosine = self.scalar
+    //        var vector = self.vector
+    //        if cosine < 0.0 {
+    //             // reverse the sign of the scalar and vector part of the Quaternion
+    //            cosine = -cosine
+    //            vector = -vector
+    //        }
+    //        var sine = length(vector)
+    //        if abs(sine) < 1.0e-8 {
+    //            // zero vector part
+    //            return Rotation(angle: 0.0, andAxis: SIMD3<Double>())
+    //        }
+    //        // determine in which octant is v
+    //        vector *= (1.0 / sine) // the vector is normalized
+    //        let octantX = Double(signOf: vector.x, magnitudeOf: 1.0)
+    //        let octantY = Double(signOf: vector.y, magnitudeOf: 1.0)
+    //        let octantZ = Double(signOf: vector.z, magnitudeOf: 1.0)
+    //        let octant: Int = Int(octantX + octantY + octantZ)
+    //        if octant < 0 {
+    //            vector = -vector
+    //            sine = -sine
+    //        }
+    //        let thetahalf = atan2(sine, cosine)
+    //        return Rotation(angle: thetahalf * 2.0, andAxis: vector)
+    //    }
+    
     /// The angle (in radians) by which `self`'s action rotates.
     public var angle: Double { 2.0 * acos(vector.w) }
 
@@ -162,4 +197,19 @@ public struct simd_quatd: Equatable {
 //
 //    /// Divide `lhs` by `rhs`.
 //    public static func /= (lhs: inout simd_quatd, rhs: Double)
+}
+
+
+extension double3x3 {
+    public init(_ quatd: simd_quatd) {
+        let q0 = quatd.real
+        let qx = quatd.imag.x
+        let qy = quatd.imag.y
+        let qz = quatd.imag.z
+        self.init(rows: [
+            .init(x: q0*q0+qx*qx-qy*qy-qz*qz, y: 2.0*(qx*qy-q0*qz), z: 2.0*(qx*qz+q0*qy)),
+            .init(x: 2.0*(qy*qx+q0*qz), y: q0*q0-qx*qx+qy*qy-qz*qz, z: 2.0*(qy*qz-q0*qx)),
+            .init(x: 2.0*(qz*qx-q0*qy), y: 2.0*(qz*qy+q0*qx), z: q0*q0-qx*qx-qy*qy+qz*qz)
+        ])
+    }
 }
