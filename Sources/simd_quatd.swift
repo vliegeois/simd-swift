@@ -52,7 +52,7 @@ public struct simd_quatd: Equatable {
     }
 
     /// A quaternion whose action rotates the vector `from` onto the vector `to`.
-    init(from: SIMD3<Double>, to: SIMD3<Double>) {
+    public init(from: SIMD3<Double>, to: SIMD3<Double>) {
         var initialDirection = from
         var finalDirection = to
         if SimdSwift.length(initialDirection) < 1.0e-6 || SimdSwift.length(finalDirection) < 1.0e-6 {
@@ -90,7 +90,7 @@ public struct simd_quatd: Equatable {
     }
     
     /// Construct a quaternion from `rotationMatrix`.
-    init(_ rotMat: double3x3) {
+    public init(_ rotMat: double3x3) {
         // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToAngle/
         // the global formula has an issue (singularity) if theta = 0° or 180°
         // Check for singularity
@@ -160,7 +160,7 @@ public struct simd_quatd: Equatable {
     }
     
     // Construct a quaternion from `rotationMatrix`.
-    init(_ rotationMatrix: double4x4) {
+    public init(_ rotationMatrix: double4x4) {
         let cols = rotationMatrix.columns
         self.init(.init(SIMD3(x: cols.0.x, y: cols.0.y, z: cols.0.z), SIMD3(x: cols.1.x, y: cols.1.y, z: cols.1.z), SIMD3(x: cols.2.x, y: cols.2.y, z: cols.2.z)))
     }
