@@ -171,6 +171,9 @@ public struct simd_quatd: Equatable {
     /// The imaginary (vector) part of `self`.
     public var imag: SIMD3<Double> { .init(vector.x, vector.y, vector.z) }
     
+    /// The angle (in radians) from -pi to pi and the normalized axis by which `self`'s action rotates as a tuple.
+    ///
+    /// The axis must lies one of the fourth octant where no more than one direction is negative
     public var angleAxis: (angle: Double, axis: SIMD3<Double>) {
     //    Q = cos(theta/2) + sin(theta/2) * v
     //    where v is a unit vector along the rotation axis
@@ -206,7 +209,7 @@ public struct simd_quatd: Equatable {
         return (angle: thetahalf * 2.0, axis: vector)
     }
     
-    /// The angle (in radians) by which `self`'s action rotates.
+    /// The angle (in radians) from 0 to 2*pi by which `self`'s action rotates.
     public var angle: Double { 2.0 * acos(vector.w) }
 
     /// The normalized axis about which `self`'s action rotates.
