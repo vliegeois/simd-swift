@@ -37,12 +37,20 @@ class simd_quatdTests: XCTestCase {
         XCTAssertEqual(a.axis, v, accuracy: 1e-10)
         
     }
-//    func testSimd_quatdFromTo() throws {
-//    }
-//    func testSimd_quatdRotMat() throws {
-//        let a = simd_quatd(angle: Double.pi/3, axis: normalize(.init(x: 1, y: -2, z: -1.5)))
-//        let rotMat = double3x3(a)
-//        let b = simd_quadt(rotMat)
-//        XCTAssertEqual(a.vector, b.vector, accuracy: 1e-10)
-//    }
+    func testSimd_quatdFromTo() throws {
+        let a = simd_double3(x: 1, y: 0, z: 0)
+        let b = simd_double3(x: 0, y: 1, z: 0)
+        let q = simd_quatd(from: a, to: b)
+        XCTAssertEqual(q, .init(angle: Double.pi/2, axis: simd_double3(x: 0, y: 0, z: 1)), accuracy: 1e-10)
+    }
+    func testSimd_quatdRotMat() throws {
+        let a = simd_quatd(angle: Double.pi/3, axis: normalize(.init(x: 1, y: -2, z: 1.5)))
+        let rotMat = double3x3(a)
+        let b = simd_quatd(rotMat)
+        XCTAssertEqual(a, b, accuracy: 1e-10)
+    }
+}
+
+public func XCTAssertEqual(_ expression1: simd_quatd, _ expression2: simd_quatd, accuracy: Double, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {
+    XCTAssertEqual(expression1.vector, expression2.vector, accuracy: accuracy)
 }

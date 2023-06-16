@@ -51,14 +51,119 @@ public struct simd_quatd: Equatable {
         vector = .init(axis.x * s, axis.y * s, axis.z * s, cos(angle/2.0))
     }
 
-//    /// A quaternion whose action rotates the vector `from` onto the vector `to`.
-//    public init(from: SIMD3<Double>, to: SIMD3<Double>)
-//
-//    /// Construct a quaternion from `rotationMatrix`.
-//    public init(_ rotationMatrix: simd_double3x3)
-//
-//    /// Construct a quaternion from `rotationMatrix`.
-//    public init(_ rotationMatrix: simd_double4x4)
+    /// A quaternion whose action rotates the vector `from` onto the vector `to`.
+    init(from: SIMD3<Double>, to: SIMD3<Double>) {
+        var initialDirection = from
+        var finalDirection = to
+        if SimdSwift.length(initialDirection) < 1.0e-6 || SimdSwift.length(finalDirection) < 1.0e-6 {
+            self.init(angle: .zero, axis: SIMD3<Double>(1.0, 0.0, 0.0))
+            return
+        }
+        // normalize the vectors
+        initialDirection = normalize(initialDirection)
+        finalDirection = normalize(finalDirection)
+        // dot product ang angle
+        var s = dot(initialDirection, finalDirection)
+        // problem with dot product equal -1.000 or 1.000
+        if s < -1.00 {
+            s = -1.00
+        } else if s > 1.00 {
+            s = 1.00
+        }
+        let angle = acos(s)
+        var axis: SIMD3<Double>
+        // axis vector of rotation
+        if (1.0 - abs(s)) < 1.0e-8 { // the initialDirection and finalDirection are colinear
+            // generate random unit vector
+            let dummy = normalize(simd_double3.random(in: 10...100))
+            axis = dummy - project(dummy, initialDirection)
+            axis = axis - project (axis, finalDirection)
+        } else {
+            axis = cross(initialDirection, finalDirection)
+        }
+        // normalize the axis
+        if SimdSwift.length(axis) < 1.0e-6 {
+            self.init(angle: .zero, axis: SIMD3<Double>(1.0, 0.0, 0.0))
+            return
+        }
+        self.init(angle: angle, axis: normalize(axis))
+    }
+    
+    /// Construct a quaternion from `rotationMatrix`.
+    init(_ rotMat: double3x3) {
+        // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToAngle/
+        // the global formula has an issue (singularity) if theta = 0° or 180°
+        // Check for singularity
+        if abs(rotMat[0, 1] - rotMat[1, 0]) < 0.001 && abs(rotMat[0, 2] - rotMat[2, 0]) < 0.001 && abs(rotMat[1, 2] - rotMat[2, 1]) < 0.001 {
+            // Angle is either 0° or 180°
+            // Test for 0 angle which give identity rotMat
+            let trace = rotMat[0, 0] + rotMat[1, 1] + rotMat[2, 2]
+            if abs(rotMat[0, 1] + rotMat[1, 0]) < 0.001 && abs(rotMat[0, 2] + rotMat[2, 0]) < 0.001 && abs(rotMat[1, 2] + rotMat[2, 1]) < 0.001 && abs(trace - 3) < 0.001 {
+                self.init(angle: .zero, axis: SIMD3<Double>(1.0, 0.0, 0.0))
+                return
+            }
+            // Singularity is 180°
+            // rotMat is
+            // 2*x*x-1    2*x*y    2*x*z
+            // 2*x*y    2*y*y-1    2*y*z
+            // 2*x*z    2*y*z    2*z*z*-1
+            let angle = Double.pi
+            let axis: SIMD3<Double>
+            let invsqrt2 = 1.0 / sqrt(2.0)
+            let xx = (rotMat[0, 0] + 1.0) / 2.0
+            let yy = (rotMat[1, 1] + 1.0) / 2.0
+            let zz = (rotMat[2, 2] + 1.0) / 2.0
+            let xy = (rotMat[0, 1] + rotMat[1, 0]) / 4.0
+            let xz = (rotMat[0, 2] + rotMat[2, 0]) / 4.0
+            let yz = (rotMat[1, 2] + rotMat[2, 1]) / 4.0
+            if xx > yy && xx > zz { // r11 is the largest diagonal
+                if xx < 0.001 {
+                    axis = SIMD3<Double>(0, invsqrt2, invsqrt2)
+                } else {
+                    let x = sqrt(xx)
+                    axis = SIMD3<Double>(x, xy/x, xz/x)
+                }
+            } else if yy > zz { // r22 is the largest diagonal
+                if yy < 0.001 {
+                    axis = SIMD3<Double>(invsqrt2, 0, invsqrt2)
+                } else {
+                    let y = sqrt(yy)
+                    axis = SIMD3<Double>(xy/y, y, yz/y)
+                }
+            } else { // r33 is the largest diagonal
+                if zz < 0.001 {
+                    axis = SIMD3<Double>(invsqrt2, invsqrt2, 0)
+                } else {
+                    let z = sqrt(zz)
+                    axis = SIMD3<Double>(xz/z, yz/z, z)
+                }
+            }
+            self.init(angle: angle, axis: axis)
+        } else {
+            let trace = rotMat[0, 0] + rotMat[1, 1] + rotMat[2, 2]
+            var cosVal = (trace - 1.0) / 2.0
+            if cosVal < -1.0 {
+                cosVal = -1.0
+            } else if cosVal > 1.0 {
+                cosVal = 1.0
+            }
+            let angle = acos(cosVal)
+            let den2 = pow(rotMat[2, 1] - rotMat[1, 2], 2) + pow(rotMat[0, 2] - rotMat[2, 0], 2) + pow(rotMat[1, 0] - rotMat[0, 1], 2)
+            let den = sqrt(den2)
+            let f = 1.0 / den
+            let x = f * (rotMat[1, 2] - rotMat[2, 1])
+            let y = f * (rotMat[2, 0] - rotMat[0, 2])
+            let z = f * (rotMat[0, 1] - rotMat[1, 0])
+            let axis = SIMD3<Double>(x, y, z)
+            self.init(angle: angle, axis: axis)
+        }
+    }
+    
+    // Construct a quaternion from `rotationMatrix`.
+    init(_ rotationMatrix: double4x4) {
+        let cols = rotationMatrix.columns
+        self.init(.init(SIMD3(x: cols.0.x, y: cols.0.y, z: cols.0.z), SIMD3(x: cols.1.x, y: cols.1.y, z: cols.1.z), SIMD3(x: cols.2.x, y: cols.2.y, z: cols.2.z)))
+    }
 
     /// The real (scalar) part of `self`.
     public var real: Double { vector.w }

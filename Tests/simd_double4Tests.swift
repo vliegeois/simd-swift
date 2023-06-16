@@ -37,3 +37,10 @@ class simd_double4Tests: XCTestCase {
         XCTAssertEqual(2.0 / b, simd_double4(x: 1.0, y: 1.0, z: 1.0, w: 1.0))
     }
 }
+
+public func XCTAssertEqual(_ expression1: simd_double4, _ expression2: simd_double4, accuracy: Double, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {
+    XCTAssertEqual(expression1.x, expression2.x, accuracy: accuracy)
+    XCTAssertEqual(expression1.y, expression2.y, accuracy: accuracy)
+    XCTAssertEqual(expression1.z, expression2.z, accuracy: accuracy)
+    XCTAssertEqual(expression1.w, expression2.w, accuracy: accuracy)
+}
