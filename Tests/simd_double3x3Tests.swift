@@ -18,6 +18,8 @@ class simd_double3x3Tests: XCTestCase {
         let b = simd_double3x3(.init(x: 1.0, y: 2.0, z: 3.0),
                                .init(x: 4.0, y: 5.0, z: 6.0),
                                .init(x: 7.0, y: 8.0, z: 9.0))
+        XCTAssertEqual(b[0, 1], 2.0, accuracy: 1e-13)
+        XCTAssertEqual(b[1, 0], 4.0, accuracy: 1e-13)
 
         XCTAssertEqual(a + b, .init(.init(x: 3.0, y: 2.0, z: 3.0),
                                     .init(x: 4.0, y: 7.0, z: 6.0),
@@ -25,7 +27,6 @@ class simd_double3x3Tests: XCTestCase {
 
         let invalid = simd_double3x3([.init(x: 3.0, y: 6.0, z: 9.0)])
         XCTAssertEqual(invalid, .init(.init(x: 3.0, y: 6.0, z: 9.0), .zero, .zero))
-
         let c = simd_double3x3([1.0, 2.0, 3.0, 4.0])
         XCTAssertEqual(c, .init(.init(x: 1.0, y: 2.0, z: 3.0),
                                 .init(x: 4.0, y: 0.0, z: 0.0),
@@ -34,8 +35,8 @@ class simd_double3x3Tests: XCTestCase {
         let d = simd_double3x3(.init(x: 1.0, y: 4.0, z: 7.0),
                                .init(x: 2.0, y: 5.0, z: 8.0),
                                .init(x: 3.0, y: 6.0, z: 9.0))
-        XCTAssertEqual(a * d, .init(.init(x: 2.0, y: 4.0, z: 6.0),
-                                    .init(x: 8.0, y: 10.0, z: 12.0),
-                                    .init(x: 14.0, y: 16.0, z: 18.0)))
+        XCTAssertEqual(a * d, .init(.init(x: 2.0, y: 8.0, z: 14.0),
+                                    .init(x: 4.0, y: 10.0, z: 16.0),
+                                    .init(x: 6.0, y: 12.0, z: 18.0)))
     }
 }
