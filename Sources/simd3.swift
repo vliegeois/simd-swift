@@ -175,4 +175,18 @@ extension SIMD3 where Scalar: BinaryFloatingPoint {
     }
 }
 
+extension SIMD3 where Scalar: FixedWidthInteger {
+    /// Returns a vector with random values from within the specified range in
+    /// all lanes.
+    @inlinable public static func random(in range: Range<Scalar>) -> Self {
+        .init(x: Scalar.random(in: range), y: Scalar.random(in: range), z: Scalar.random(in: range))
+    }
+
+    /// Returns a vector with random values from within the specified range in
+    /// all lanes.
+    @inlinable public static func random(in range: ClosedRange<Scalar>) -> Self {
+        .init(x: Scalar.random(in: range), y: Scalar.random(in: range), z: Scalar.random(in: range))
+    }
+}
+
 //#endif
