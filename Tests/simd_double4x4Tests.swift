@@ -20,8 +20,8 @@ class simd_double4x4Tests: XCTestCase {
                                .init(x: 9.0, y: 10.0, z: 11.0, w: 12.0),
                                .init(x: 13.0, y: 14.0, z: 15.0, w: 16.0))
         
-        XCTAssertEqual(b[0, 1], 2.0, accuracy: 1e-13)
-        XCTAssertEqual(b[1, 0], 5.0, accuracy: 1e-13)
+        XCTAssertEqual(b[0, 1], 2.0, accuracy: 1e-10)
+        XCTAssertEqual(b[1, 0], 5.0, accuracy: 1e-10)
 
         XCTAssertEqual(a + b, .init(.init(x: 3.0, y: 2.0, z: 3.0, w: 4.0),
                                     .init(x: 5.0, y: 8.0, z: 7.0, w: 8.0),

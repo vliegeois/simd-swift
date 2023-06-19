@@ -12,7 +12,7 @@
 public typealias simd_double4 = SIMD4<Double>
 public typealias simd_float4 = SIMD4<Float>
 
-public struct SIMD4<Scalar>: SIMD where Scalar : FloatingPoint {
+public struct SIMD4<Scalar>: SIMD where Scalar : SIMDScalar {
     /// The number of scalars in the vector.
     public let scalarCount: Int = 4
 

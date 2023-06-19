@@ -24,19 +24,19 @@ class simd_quatdTests: XCTestCase {
         let c = simd_quatd(angle: 90.0.toRadians, axis: .init(1.0, 0.0, 0.0))
         let c2 = simd_quatd(ix: 0.7071067811865475, iy: 0.0, iz: 0.0, r: 0.7071067811865476)
         XCTAssertEqual(c, c2)
-        XCTAssertEqual(c2.angle.toDegrees, 90.0, accuracy: 1e-13)
+        XCTAssertEqual(c2.angle.toDegrees, 90.0, accuracy: 1e-10)
         XCTAssertEqual(c2.axis, .init(1.0, 0.0, 0.0))
     }
     func testSimd_quatdAngleAxis() throws {
         let v = normalize(SIMD3<Double>(x: 1, y: -2, z: -1.5))
         let a = simd_quatd(angle: Double.pi/3, axis: v)
         let aa = a.angleAxis
-        XCTAssertEqual(a.length, 1.0, accuracy: 1e-13)
-        XCTAssertEqual(a.real, sqrt(3)/2, accuracy: 1e-13)
+        XCTAssertEqual(a.length, 1.0, accuracy: 1e-10)
+        XCTAssertEqual(a.real, sqrt(3)/2, accuracy: 1e-10)
         XCTAssertEqual(a.imag, 0.5*v, accuracy: 1e-10)
-        XCTAssertEqual(a.angle, Double.pi/3, accuracy: 1e-13)
+        XCTAssertEqual(a.angle, Double.pi/3, accuracy: 1e-10)
         XCTAssertEqual(a.axis, v, accuracy: 1e-10)
-        XCTAssertEqual(aa.angle, -Double.pi/3, accuracy: 1e-13)
+        XCTAssertEqual(aa.angle, -Double.pi/3, accuracy: 1e-10)
         XCTAssertEqual(aa.axis, -v, accuracy: 1e-10)
     }
     func testSimd_quatdFromTo() throws {

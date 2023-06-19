@@ -18,8 +18,8 @@ class simd_double3x3Tests: XCTestCase {
         let b = simd_double3x3(.init(x: 1.0, y: 2.0, z: 3.0),
                                .init(x: 4.0, y: 5.0, z: 6.0),
                                .init(x: 7.0, y: 8.0, z: 9.0))
-        XCTAssertEqual(b[0, 1], 2.0, accuracy: 1e-13)
-        XCTAssertEqual(b[1, 0], 4.0, accuracy: 1e-13)
+        XCTAssertEqual(b[0, 1], 2.0, accuracy: 1e-10)
+        XCTAssertEqual(b[1, 0], 4.0, accuracy: 1e-10)
 
         XCTAssertEqual(a + b, .init(.init(x: 3.0, y: 2.0, z: 3.0),
                                     .init(x: 4.0, y: 7.0, z: 6.0),

@@ -7,6 +7,17 @@
 
 import Foundation
 
+public protocol SIMDScalar: SignedNumeric, AdditiveArithmetic, Comparable, Codable {
+    static func + (a: Self, b: Self) -> Self
+    static func - (a: Self, b: Self) -> Self
+    static func * (a: Self, b: Self) -> Self
+    static func / (a: Self, b: Self) -> Self
+}
+
+extension Double: SIMDScalar{}
+extension Float: SIMDScalar{}
+extension Int: SIMDScalar{}
+
 public protocol SIMD<Scalar>: Equatable {
     associatedtype Scalar
 //}

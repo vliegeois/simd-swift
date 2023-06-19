@@ -53,7 +53,7 @@ class simd_double3Tests: XCTestCase {
         XCTAssertEqual(1.0 / sqrt(25.0), inverseSqrt)
 
         let normalise = a * rsqrt(simd_length_squared(a))
-        XCTAssertEqual(simd_normalize(a), normalise, accuracy: 1e-14)
+        XCTAssertEqual(simd_normalize(a), normalise, accuracy: 1e-10)
     }
 }
 

@@ -5,11 +5,15 @@
 //  Created by Damien Noël Dubuisson on 05/10/2021.
 //
 
-#if os(macOS) || os(iOS)
-import Darwin
-#elseif os(Linux) || CYGWIN
-import Glibc
-#endif
+//#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+//import Darwin
+//#elseif os(Linux)
+//import Glibc
+//#elseif os(Windows)
+//import ucrt
+//#endif
+
+import Numerics
 
 public struct simd_quatd: Equatable {
     public var vector: simd_double4
@@ -46,9 +50,9 @@ public struct simd_quatd: Equatable {
     ///   - axis: The axis to rotate around.
     public init(angle: Double, axis: SIMD3<Double>) {
         //    Q = cos(theta/2) + sin(theta/2) * v
-        let s = sin(angle/2.0)
+        let s = Double.sin(angle/2.0)
         let axis = simd_normalize(axis)
-        vector = .init(axis.x * s, axis.y * s, axis.z * s, cos(angle/2.0))
+        vector = .init(axis.x * s, axis.y * s, axis.z * s, Double.cos(angle/2.0))
     }
 
     /// A quaternion whose action rotates the vector `from` onto the vector `to`.
@@ -70,7 +74,7 @@ public struct simd_quatd: Equatable {
         } else if s > 1.00 {
             s = 1.00
         }
-        let angle = acos(s)
+        let angle = Double.acos(s)
         var axis: SIMD3<Double>
         // axis vector of rotation
         if (1.0 - abs(s)) < 1.0e-8 { // the initialDirection and finalDirection are colinear
@@ -109,7 +113,7 @@ public struct simd_quatd: Equatable {
             // 2*x*z    2*y*z    2*z*z*-1
             let angle = Double.pi
             let axis: SIMD3<Double>
-            let invsqrt2 = 1.0 / sqrt(2.0)
+            let invsqrt2 = 1.0 / Double.sqrt(2.0)
             let xx = (rotMat[0, 0] + 1.0) / 2.0
             let yy = (rotMat[1, 1] + 1.0) / 2.0
             let zz = (rotMat[2, 2] + 1.0) / 2.0
@@ -120,21 +124,21 @@ public struct simd_quatd: Equatable {
                 if xx < 0.001 {
                     axis = SIMD3<Double>(0, invsqrt2, invsqrt2)
                 } else {
-                    let x = sqrt(xx)
+                    let x = Double.sqrt(xx)
                     axis = SIMD3<Double>(x, xy/x, xz/x)
                 }
             } else if yy > zz { // r22 is the largest diagonal
                 if yy < 0.001 {
                     axis = SIMD3<Double>(invsqrt2, 0, invsqrt2)
                 } else {
-                    let y = sqrt(yy)
+                    let y = Double.sqrt(yy)
                     axis = SIMD3<Double>(xy/y, y, yz/y)
                 }
             } else { // r33 is the largest diagonal
                 if zz < 0.001 {
                     axis = SIMD3<Double>(invsqrt2, invsqrt2, 0)
                 } else {
-                    let z = sqrt(zz)
+                    let z = Double.sqrt(zz)
                     axis = SIMD3<Double>(xz/z, yz/z, z)
                 }
             }
@@ -147,9 +151,9 @@ public struct simd_quatd: Equatable {
             } else if cosVal > 1.0 {
                 cosVal = 1.0
             }
-            let angle = acos(cosVal)
-            let den2 = pow(rotMat[2, 1] - rotMat[1, 2], 2) + pow(rotMat[0, 2] - rotMat[2, 0], 2) + pow(rotMat[1, 0] - rotMat[0, 1], 2)
-            let den = sqrt(den2)
+            let angle = Double.acos(cosVal)
+            let den2 = Double.pow(rotMat[2, 1] - rotMat[1, 2], 2) + Double.pow(rotMat[0, 2] - rotMat[2, 0], 2) + Double.pow(rotMat[1, 0] - rotMat[0, 1], 2)
+            let den = Double.sqrt(den2)
             let f = 1.0 / den
             let x = f * (rotMat[1, 2] - rotMat[2, 1])
             let y = f * (rotMat[2, 0] - rotMat[0, 2])
@@ -205,16 +209,16 @@ public struct simd_quatd: Equatable {
             vector = -vector
             sine = -sine
         }
-        let thetahalf = atan2(sine, cosine)
+        let thetahalf = Double.atan2(y: sine, x: cosine)
         return (angle: thetahalf * 2.0, axis: vector)
     }
     
     /// The angle (in radians) from 0 to 2*pi by which `self`'s action rotates.
-    public var angle: Double { 2.0 * acos(vector.w) }
+    public var angle: Double { 2.0 * Double.acos(vector.w) }
 
     /// The normalized axis about which `self`'s action rotates.
     public var axis: SIMD3<Double> {
-        let a = sin(angle/2.0)
+        let a = Double.sin(angle/2.0)
         return .init(vector.x / a, vector.y / a, vector.z / a)
     }
 
@@ -241,7 +245,7 @@ public struct simd_quatd: Equatable {
 
     /// The length of the quaternion interpreted as a 4d vector.
     public var length: Double {
-        return sqrt(vector.x*vector.x + vector.y*vector.y + vector.z*vector.z + vector.w*vector.w)
+        return Double.sqrt(vector.x*vector.x + vector.y*vector.y + vector.z*vector.z + vector.w*vector.w)
     }
 
     // MARK: - Self's Operation
