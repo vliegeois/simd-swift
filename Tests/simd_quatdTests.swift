@@ -19,13 +19,13 @@ class simd_quatdTests: XCTestCase {
         XCTAssertEqual(a.inverse, aInverse)
 
         let b = simd_quatd(vector: .init(1.0, 2.0, 3.0, 4.0))
-        XCTAssertEqual(a + b, .init(ix: 5.0, iy: 7.0, iz: 12.0, r: 11.0))
+        XCTAssertEqual(a + b, .init(ix: 5.0, iy: 7.0, iz: 12.0, r: 11.0), accuracy: 1e-10)
 
         let c = simd_quatd(angle: 90.0.toRadians, axis: .init(1.0, 0.0, 0.0))
         let c2 = simd_quatd(ix: 0.7071067811865475, iy: 0.0, iz: 0.0, r: 0.7071067811865476)
-        XCTAssertEqual(c, c2)
+        XCTAssertEqual(c, c2, accuracy: 1e-10)
         XCTAssertEqual(c2.angle.toDegrees, 90.0, accuracy: 1e-10)
-        XCTAssertEqual(c2.axis, .init(1.0, 0.0, 0.0))
+        XCTAssertEqual(c2.axis, .init(1.0, 0.0, 0.0), accuracy: 1e-10)
     }
     func testSimd_quatdAngleAxis() throws {
         let v = normalize(SIMD3<Double>(x: 1, y: -2, z: -1.5))

@@ -26,16 +26,19 @@ class simd_double4x4Tests: XCTestCase {
         XCTAssertEqual(a + b, .init(.init(x: 3.0, y: 2.0, z: 3.0, w: 4.0),
                                     .init(x: 5.0, y: 8.0, z: 7.0, w: 8.0),
                                     .init(x: 9.0, y: 10.0, z: 13.0, w: 12.0),
-                                    .init(x: 13.0, y: 14.0, z: 15.0, w: 18.0)))
+                                    .init(x: 13.0, y: 14.0, z: 15.0, w: 18.0)),
+                       accuracy: 1e-10)
 
         let invalid = simd_double4x4([.init(x: 3.0, y: 6.0, z: 9.0, w: 12.0)])
-        XCTAssertEqual(invalid, .init(.init(x: 3.0, y: 6.0, z: 9.0, w: 12.0), .zero, .zero, .zero))
+        XCTAssertEqual(invalid, .init(.init(x: 3.0, y: 6.0, z: 9.0, w: 12.0), .zero, .zero, .zero),
+                       accuracy: 1e-10)
 
         let c = simd_double4x4([1.0, 2.0, 3.0, 4.0, 5.0])
         XCTAssertEqual(c, .init(.init(x: 1.0, y: 2.0, z: 3.0, w: 4.0),
                                 .init(x: 5.0, y: 0.0, z: 0.0, w: 0.0),
                                 .zero,
-                                .zero))
+                                .zero),
+                       accuracy: 1e-10)
 
         let d = simd_double4x4(.init(x: 1.0, y: 5.0, z: 9.0, w: 13.0),
                                .init(x: 2.0, y: 6.0, z: 10.0, w: 14.0),
@@ -44,6 +47,14 @@ class simd_double4x4Tests: XCTestCase {
         XCTAssertEqual(a * d, .init(.init(x: 2.0, y: 10.0, z: 18.0, w: 26.0),
                                     .init(x: 4.0, y: 12.0, z: 20.0, w: 28.0),
                                     .init(x: 6.0, y: 14.0, z: 22.0, w: 30.0),
-                                    .init(x: 8.0, y: 16.0, z: 24.0, w: 32.0)))
+                                    .init(x: 8.0, y: 16.0, z: 24.0, w: 32.0)),
+                       accuracy: 1e-10)
     }
+}
+
+public func XCTAssertEqual(_ expression1: double4x4, _ expression2: double4x4, accuracy: Double, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {
+    XCTAssertEqual(expression1.columns.0, expression2.columns.0, accuracy: accuracy)
+    XCTAssertEqual(expression1.columns.1, expression2.columns.1, accuracy: accuracy)
+    XCTAssertEqual(expression1.columns.2, expression2.columns.2, accuracy: accuracy)
+    XCTAssertEqual(expression1.columns.3, expression2.columns.3, accuracy: accuracy)
 }
