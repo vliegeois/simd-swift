@@ -124,6 +124,10 @@ public struct SIMD4<Scalar>: SIMD where Scalar : SIMDScalar {
     public static var zero: Self { .init() }
     /// A vector with one in all lanes.
     public static var one: Self { .init(x: .one, y: .one, z: .one, w: .one) }
+    
+}
+
+extension SIMD4 where Scalar: FloatingPoint {
 
     // MARK: - Min/Max
 
@@ -215,6 +219,47 @@ public struct SIMD4<Scalar>: SIMD where Scalar : SIMDScalar {
     }
 }
 
+extension SIMD4 where Scalar: FixedWidthInteger {
+    
+    public static func &+ (lhs: Self, rhs: Self) -> Self {
+        return .init(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z, w: lhs.w + rhs.w)
+    }
+
+    public static func &- (lhs: Self, rhs: Self) -> Self {
+        return .init(x: lhs.x - rhs.x, y: lhs.y - rhs.y, z: lhs.z - rhs.z, w: lhs.w - rhs.w)
+    }
+
+    public static func &* (lhs: Self, rhs: Self) -> Self {
+        return .init(x: lhs.x * rhs.x, y: lhs.y * rhs.y, z: lhs.z * rhs.z, w: lhs.w * rhs.w)
+    }
+    
+    public static func &+ (lhs: Scalar, rhs: Self) -> Self {
+        return .init(x: lhs + rhs.x, y: lhs + rhs.y, z: lhs + rhs.z, w: lhs + rhs.w)
+    }
+
+    public static func &- (lhs: Scalar, rhs: Self) -> Self {
+        return .init(x: lhs - rhs.x, y: lhs - rhs.y, z: lhs - rhs.z, w: lhs - rhs.w)
+    }
+
+    public static func &* (lhs: Scalar, rhs: Self) -> Self {
+        return .init(x: lhs * rhs.x, y: lhs * rhs.y, z: lhs * rhs.z, w: lhs * rhs.w)
+    }
+    
+    public static func &+ (lhs: Self, rhs: Scalar) -> Self {
+        return .init(x: lhs.x + rhs, y: lhs.y + rhs, z: lhs.z + rhs, w: lhs.w + rhs)
+    }
+
+    public static func &- (lhs: Self, rhs: Scalar) -> Self {
+        return .init(x: lhs.x - rhs, y: lhs.y - rhs, z: lhs.z - rhs, w: lhs.w - rhs)
+    }
+
+    public static func &* (lhs: Self, rhs: Scalar) -> Self {
+        return .init(x: lhs.x * rhs, y: lhs.y * rhs, z: lhs.z * rhs, w: lhs.w * rhs)
+    }
+    
+    
+}
+
 extension SIMD4 where Scalar: BinaryFloatingPoint {
     /// Creates a vector from another one
     public init<T: BinaryFloatingPoint>(_ v: SIMD4<T>) {
@@ -248,16 +293,6 @@ extension SIMD4 where Scalar: FloatingPoint {
     public func rounded(_ rule: FloatingPointRoundingRule) -> SIMD4<Scalar> {
         .init(x: x.rounded(rule), y: y.rounded(rule), z: z.rounded(rule), w: w.rounded(rule))
     }
-}
-
-public func floor<T>(_ v: SIMD4<T>) -> SIMD4<T> where T: FloatingPoint {
-    v.rounded(.down)
-}
-public func ceil<T>(_ v: SIMD4<T>) -> SIMD4<T> where T: FloatingPoint {
-    v.rounded(.up)
-}
-public func trunc<T>(_ v: SIMD4<T>) -> SIMD4<T> where T: FloatingPoint {
-    v.rounded(.towardZero)
 }
 
 extension SIMD4 where Scalar == Double {

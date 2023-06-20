@@ -61,8 +61,14 @@ class simd_double3Tests: XCTestCase {
         XCTAssertEqual(aInt.z, 3)
         let aDouble = SIMD3<Double>(aInt)
         XCTAssertEqual(aDouble, simd_double3(x: 1.0, y: 2.0, z: 3.0), accuracy: 1e-10)
-        let aTrunc = trunc(a)
-        XCTAssertEqual(aDouble, simd_double3(x: 1.0, y: 2.0, z: 3.0), accuracy: 1e-10)
+        let aTrunc = trunc(simd_double3(x: 1.3, y: 2.5, z: -4.3))
+        XCTAssertEqual(aTrunc, simd_double3(x: 1.0, y: 2.0, z: -4.0), accuracy: 1e-10)
+        let aAbs = abs(simd_double3(x: 1.3, y: 2.5, z: -4.3))
+        XCTAssertEqual(aAbs, simd_double3(x: 1.3, y: 2.5, z: 4.3), accuracy: 1e-10)
+        let aMin = min(simd_double3(x: 1.3, y: 2.5, z: -4.3), 2.0)
+        XCTAssertEqual(aMin, simd_double3(x: 1.3, y: 2.0, z: -4.3), accuracy: 1e-10)
+        let aMax = max(simd_double3(x: 1.3, y: 2.5, z: -4.3), 2.0)
+        XCTAssertEqual(aMax, simd_double3(x: 2.0, y: 2.5, z: 2.0), accuracy: 1e-10)
     }
 }
 

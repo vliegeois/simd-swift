@@ -18,6 +18,16 @@ import Numerics
 // Will define all static helpers for simd
 
 // MARK: - Double/Float
+extension SIMD3 where Scalar: Real {
+    public func squareRoot() -> SIMD3<Scalar> {
+        .init(x: Scalar.sqrt(x), y: Scalar.sqrt(y), z: Scalar.sqrt(z))
+    }
+}
+extension SIMD4 where Scalar: Real {
+    public func squareRoot() -> SIMD4<Scalar> {
+        .init(x: Scalar.sqrt(x), y: Scalar.sqrt(y), z: Scalar.sqrt(z), w: Scalar.sqrt(w))
+    }
+}
 /// Reciprocal square root.
 public func rsqrt<T: Real>(_ x: T) -> T { return T(1) / T.sqrt(x) }
 
@@ -145,3 +155,77 @@ public func distance_squared<T: Real>(_ x: SIMD4<T>, _ y: SIMD4<T>) -> T {
     simd_length_squared(x-y)
 }
 
+// MARK: Min/Max
+
+/// Elementwise maximum of two vectors.  Each component of the result is the
+/// larger of the corresponding component of the inputs.
+public func max<T: Real>(_ x: SIMD3<T>, _ y: SIMD3<T>) -> SIMD3<T> {
+    .init(x: max(x.x, y.x), y: max(x.y, y.y), z: max(x.z, y.z))
+}
+/// Vector-scalar maximum.  Each component of the result is the maximum of the
+/// corresponding element of the input vector and the scalar.
+public func max<T: Real>(_ x: SIMD3<T>, _ scalar: T) -> SIMD3<T> {
+    .init(x: max(x.x, scalar), y: max(x.y, scalar), z: max(x.z, scalar))
+}
+/// Elementwise maximum of two vectors.  Each component of the result is the
+/// larger of the corresponding component of the inputs.
+public func max<T: Real>(_ x: SIMD4<T>, _ y: SIMD4<T>) -> SIMD4<T> {
+    .init(x: max(x.x, y.x), y: max(x.y, y.y), z: max(x.z, y.z), w: max(x.w, y.w))
+}
+/// Vector-scalar maximum.  Each component of the result is the maximum of the
+/// corresponding element of the input vector and the scalar.
+public func max<T: Real>(_ x: SIMD4<T>, _ scalar: T) -> SIMD4<T> {
+    .init(x: max(x.x, scalar), y: max(x.y, scalar), z: max(x.z, scalar), w: max(x.w, scalar))
+}
+
+/// Elementwise minimum of two vectors.  Each component of the result is the
+/// smaller of the corresponding component of the inputs.
+public func min<T: Real>(_ x: SIMD3<T>, _ y: SIMD3<T>) -> SIMD3<T> {
+    .init(x: min(x.x, y.x), y: min(x.y, y.y), z: min(x.z, y.z))
+}
+/// Vector-scalar minimum.  Each component of the result is the minimum of the
+/// corresponding element of the input vector and the scalar.
+public func min<T: Real>(_ x: SIMD3<T>, _ scalar: T) -> SIMD3<T> {
+    .init(x: min(x.x, scalar), y: min(x.y, scalar), z: min(x.z, scalar))
+}
+/// Elementwise minimum of two vectors.  Each component of the result is the
+/// smaller of the corresponding component of the inputs.
+public func min<T: Real>(_ x: SIMD4<T>, _ y: SIMD4<T>) -> SIMD4<T> {
+    .init(x: min(x.x, y.x), y: min(x.y, y.y), z: min(x.z, y.z), w: min(x.w, y.w))
+}
+/// Vector-scalar minimum.  Each component of the result is the minimum of the
+/// corresponding element of the input vector and the scalar.
+public func min<T: Real>(_ x: SIMD4<T>, _ scalar: T) -> SIMD4<T> {
+    .init(x: min(x.x, scalar), y: min(x.y, scalar), z: min(x.z, scalar), w: min(x.w, scalar))
+}
+
+
+// MARK: abs
+public func abs<T: Real>(_ v: SIMD3<T>) -> SIMD3<T> {
+    .init(x: abs(v.x), y: abs(v.y), z: abs(v.z))
+}
+public func abs<T: Real>(_ v: SIMD4<T>) -> SIMD4<T> {
+    .init(x: abs(v.x), y: abs(v.y), z: abs(v.z), w: abs(v.w))
+}
+
+// MARK: floor, ceil, trunc
+public func floor<T: Real>(_ v: SIMD3<T>) -> SIMD3<T> {
+    v.rounded(.down)
+}
+public func ceil<T: Real>(_ v: SIMD3<T>) -> SIMD3<T> {
+    v.rounded(.up)
+}
+public func trunc<T: Real>(_ v: SIMD3<T>) -> SIMD3<T> {
+    v.rounded(.towardZero)
+}
+
+
+public func floor<T: Real>(_ v: SIMD4<T>) -> SIMD4<T> {
+    v.rounded(.down)
+}
+public func ceil<T: Real>(_ v: SIMD4<T>) -> SIMD4<T> {
+    v.rounded(.up)
+}
+public func trunc<T: Real>(_ v: SIMD4<T>) -> SIMD4<T> {
+    v.rounded(.towardZero)
+}

@@ -103,6 +103,10 @@ public struct SIMD3<Scalar>: SIMD where Scalar : SIMDScalar {
     public static var zero: Self { .init() }
     /// A vector with one in all lanes.
     public static var one: Self { .init(x: .one, y: .one, z: .one) }
+    
+}
+
+extension SIMD3 where Scalar: FloatingPoint {
 
     // MARK: - Min/Max/Sum
 
@@ -194,6 +198,46 @@ public struct SIMD3<Scalar>: SIMD where Scalar : SIMDScalar {
     }
 }
 
+
+extension SIMD3 where Scalar: FixedWidthInteger {
+    
+    public static func &+ (lhs: Self, rhs: Self) -> Self {
+        return .init(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
+    }
+
+    public static func &- (lhs: Self, rhs: Self) -> Self {
+        return .init(x: lhs.x - rhs.x, y: lhs.y - rhs.y, z: lhs.z - rhs.z)
+    }
+
+    public static func &* (lhs: Self, rhs: Self) -> Self {
+        return .init(x: lhs.x * rhs.x, y: lhs.y * rhs.y, z: lhs.z * rhs.z)
+    }
+    
+    public static func &+ (lhs: Scalar, rhs: Self) -> Self {
+        return .init(x: lhs + rhs.x, y: lhs + rhs.y, z: lhs + rhs.z)
+    }
+
+    public static func &- (lhs: Scalar, rhs: Self) -> Self {
+        return .init(x: lhs - rhs.x, y: lhs - rhs.y, z: lhs - rhs.z)
+    }
+
+    public static func &* (lhs: Scalar, rhs: Self) -> Self {
+        return .init(x: lhs * rhs.x, y: lhs * rhs.y, z: lhs * rhs.z)
+    }
+    
+    public static func &+ (lhs: Self, rhs: Scalar) -> Self {
+        return .init(x: lhs.x + rhs, y: lhs.y + rhs, z: lhs.z + rhs)
+    }
+
+    public static func &- (lhs: Self, rhs: Scalar) -> Self {
+        return .init(x: lhs.x - rhs, y: lhs.y - rhs, z: lhs.z - rhs)
+    }
+
+    public static func &* (lhs: Self, rhs: Scalar) -> Self {
+        return .init(x: lhs.x * rhs, y: lhs.y * rhs, z: lhs.z * rhs)
+    }
+}
+
 extension SIMD3 where Scalar: BinaryFloatingPoint {
     /// Creates a vector from another one
     public init<T: BinaryFloatingPoint>(_ v: SIMD3<T>) {
@@ -226,15 +270,6 @@ extension SIMD3 where Scalar: FloatingPoint {
     }
 }
 
-public func floor<T>(_ v: SIMD3<T>) -> SIMD3<T> where T: FloatingPoint {
-    v.rounded(.down)
-}
-public func ceil<T>(_ v: SIMD3<T>) -> SIMD3<T> where T: FloatingPoint {
-    v.rounded(.up)
-}
-public func trunc<T>(_ v: SIMD3<T>) -> SIMD3<T> where T: FloatingPoint {
-    v.rounded(.towardZero)
-}
 
 extension SIMD3 where Scalar == Double {
     /// Returns a vector with random values from within the specified range in
