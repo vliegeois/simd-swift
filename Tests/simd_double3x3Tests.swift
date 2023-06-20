@@ -43,6 +43,20 @@ class simd_double3x3Tests: XCTestCase {
                                     .init(x: 6.0, y: 12.0, z: 18.0)),
                        accuracy: 1e-10)
     }
+    func testSimd_double3x3Det() throws {
+        let b = simd_double3x3(.init(x: 1.0, y: 2.0, z: 3.0),
+                               .init(x: 2.0, y: 5.0, z: 6.0),
+                               .init(x: 4.0, y: 5.0, z: 9.0))
+        XCTAssertEqual(b.determinant, -3.0, accuracy: 1e-10)
+    }
+    func testSimd_double3x3Inv() throws {
+        let b = simd_double3x3(.init(x: 1.0, y: 2.0, z: 3.0),
+                               .init(x: 2.0, y: 5.0, z: 6.0),
+                               .init(x: 4.0, y: 5.0, z: 9.0))
+        let binv = b.inverse
+        XCTAssertEqual(b * binv, double3x3(diagonal: SIMD3(x: 1.0, y: 1.0, z: 1.0)), accuracy: 1e-10)
+        XCTAssertEqual(binv * b, double3x3(diagonal: SIMD3(x: 1.0, y: 1.0, z: 1.0)), accuracy: 1e-10)
+    }
 }
 
 public func XCTAssertEqual(_ expression1: double3x3, _ expression2: double3x3, accuracy: Double, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {

@@ -133,6 +133,35 @@ public struct simd_double3x3: Equatable {
             }
         }
     }
+    
+    /// Transpose of the matrix.
+    public var transpose: double3x3 {
+        simd_double3x3(SIMD3(x: self[0, 0], y: self[1, 0], z: self[2, 0]), SIMD3(x: self[0, 1], y: self[1, 1], z: self[2, 1]), SIMD3(x: self[0, 2], y: self[1, 2], z: self[2, 2]))
+    }
+
+    /// Inverse of the matrix if it exists, otherwise the contents of the
+    /// resulting matrix are undefined.
+    public var inverse: simd_double3x3 {
+        let invdet = 1 / determinant
+        var minv = double3x3()
+        minv[0, 0] = (self[1, 1] * self[2, 2] - self[2, 1] * self[1, 2]) * invdet;
+        minv[0, 1] = (self[0, 2] * self[2, 1] - self[0, 1] * self[2, 2]) * invdet;
+        minv[0, 2] = (self[0, 1] * self[1, 2] - self[0, 2] * self[1, 1]) * invdet;
+        minv[1, 0] = (self[1, 2] * self[2, 0] - self[1, 0] * self[2, 2]) * invdet;
+        minv[1, 1] = (self[0, 0] * self[2, 2] - self[0, 2] * self[2, 0]) * invdet;
+        minv[1, 2] = (self[1, 0] * self[0, 2] - self[0, 0] * self[1, 2]) * invdet;
+        minv[2, 0] = (self[1, 0] * self[2, 1] - self[2, 0] * self[1, 1]) * invdet;
+        minv[2, 1] = (self[2, 0] * self[0, 1] - self[0, 0] * self[2, 1]) * invdet;
+        minv[2, 2] = (self[0, 0] * self[1, 1] - self[1, 0] * self[0, 1]) * invdet;
+        return minv
+    }
+
+    /// Determinant of the matrix.
+    public var determinant: Double {
+        self[0, 0] * (self[1, 1] * self[2, 2] - self[1, 2] * self[2, 1])
+        - self[1, 0] * (self[0, 1] * self[2, 2] - self[2, 1] * self[0, 2])
+        + self[2, 0] * (self[0, 1] * self[1, 2] - self[1, 1] * self[0, 2])
+    }
 
     /// Returns a Boolean value indicating whether two values are equal.
     ///
