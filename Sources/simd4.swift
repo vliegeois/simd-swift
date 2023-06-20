@@ -225,6 +225,14 @@ extension SIMD4 where Scalar: BinaryFloatingPoint {
     }
 }
 
+extension SIMD4 where Scalar: FloatingPoint {
+    /// A vector formed by rounding each lane of the source vector to an integral
+    /// value according to the specified rounding `rule`.
+    public func rounded(_ rule: FloatingPointRoundingRule) -> SIMD4<Scalar> {
+        .init(x: x.rounded(rule), y: y.rounded(rule), z: z.rounded(rule), w: w.rounded(rule))
+    }
+}
+
 extension SIMD4 where Scalar == Double {
     /// Returns a vector with random values from within the specified range in
     /// all lanes.

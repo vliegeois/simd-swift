@@ -203,6 +203,14 @@ extension SIMD3 where Scalar: BinaryFloatingPoint {
     }
 }
 
+extension SIMD3 where Scalar: FloatingPoint {
+    /// A vector formed by rounding each lane of the source vector to an integral
+    /// value according to the specified rounding `rule`.
+    public func rounded(_ rule: FloatingPointRoundingRule) -> SIMD3<Scalar> {
+        .init(x: x.rounded(rule), y: y.rounded(rule), z: z.rounded(rule))
+    }
+}
+
 extension SIMD3 where Scalar == Double {
     /// Returns a vector with random values from within the specified range in
     /// all lanes.
