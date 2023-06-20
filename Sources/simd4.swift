@@ -223,6 +223,23 @@ extension SIMD4 where Scalar: BinaryFloatingPoint {
         z = Scalar(v.z)
         w = Scalar(v.w)
     }
+    /// Creates a vector from another one
+    public init<T: BinaryInteger>(_ v: SIMD4<T>) {
+        x = Scalar(v.x)
+        y = Scalar(v.y)
+        z = Scalar(v.z)
+        w = Scalar(v.w)
+    }
+}
+
+extension SIMD4 where Scalar: BinaryInteger {
+    /// Creates a vector from another one
+    public init<T: BinaryFloatingPoint>(_ v: SIMD4<T>) {
+        x = Scalar(v.x)
+        y = Scalar(v.y)
+        z = Scalar(v.z)
+        w = Scalar(v.w)
+    }
 }
 
 extension SIMD4 where Scalar: FloatingPoint {
@@ -231,6 +248,16 @@ extension SIMD4 where Scalar: FloatingPoint {
     public func rounded(_ rule: FloatingPointRoundingRule) -> SIMD4<Scalar> {
         .init(x: x.rounded(rule), y: y.rounded(rule), z: z.rounded(rule), w: w.rounded(rule))
     }
+}
+
+public func floor<T>(_ v: SIMD4<T>) -> SIMD4<T> where T: FloatingPoint {
+    v.rounded(.down)
+}
+public func ceil<T>(_ v: SIMD4<T>) -> SIMD4<T> where T: FloatingPoint {
+    v.rounded(.up)
+}
+public func trunc<T>(_ v: SIMD4<T>) -> SIMD4<T> where T: FloatingPoint {
+    v.rounded(.towardZero)
 }
 
 extension SIMD4 where Scalar == Double {

@@ -54,6 +54,15 @@ class simd_double3Tests: XCTestCase {
 
         let normalise = a * rsqrt(simd_length_squared(a))
         XCTAssertEqual(simd_normalize(a), normalise, accuracy: 1e-10)
+        
+        let aInt = SIMD3<Int>(a)
+        XCTAssertEqual(aInt.x, 1)
+        XCTAssertEqual(aInt.y, 2)
+        XCTAssertEqual(aInt.z, 3)
+        let aDouble = SIMD3<Double>(aInt)
+        XCTAssertEqual(aDouble, simd_double3(x: 1.0, y: 2.0, z: 3.0), accuracy: 1e-10)
+        let aTrunc = trunc(a)
+        XCTAssertEqual(aDouble, simd_double3(x: 1.0, y: 2.0, z: 3.0), accuracy: 1e-10)
     }
 }
 

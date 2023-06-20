@@ -201,6 +201,21 @@ extension SIMD3 where Scalar: BinaryFloatingPoint {
         y = Scalar(v.y)
         z = Scalar(v.z)
     }
+    /// Creates a vector from another one
+    public init<T: BinaryInteger>(_ v: SIMD3<T>) {
+        x = Scalar(v.x)
+        y = Scalar(v.y)
+        z = Scalar(v.z)
+    }
+}
+
+extension SIMD3 where Scalar: BinaryInteger {
+    /// Creates a vector from another one
+    public init<T: BinaryFloatingPoint>(_ v: SIMD3<T>) {
+        x = Scalar(v.x)
+        y = Scalar(v.y)
+        z = Scalar(v.z)
+    }
 }
 
 extension SIMD3 where Scalar: FloatingPoint {
@@ -209,6 +224,16 @@ extension SIMD3 where Scalar: FloatingPoint {
     public func rounded(_ rule: FloatingPointRoundingRule) -> SIMD3<Scalar> {
         .init(x: x.rounded(rule), y: y.rounded(rule), z: z.rounded(rule))
     }
+}
+
+public func floor<T>(_ v: SIMD3<T>) -> SIMD3<T> where T: FloatingPoint {
+    v.rounded(.down)
+}
+public func ceil<T>(_ v: SIMD3<T>) -> SIMD3<T> where T: FloatingPoint {
+    v.rounded(.up)
+}
+public func trunc<T>(_ v: SIMD3<T>) -> SIMD3<T> where T: FloatingPoint {
+    v.rounded(.towardZero)
 }
 
 extension SIMD3 where Scalar == Double {
