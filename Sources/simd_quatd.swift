@@ -312,6 +312,8 @@ public struct simd_quatd: Equatable {
 //    public static func /= (lhs: inout simd_quatd, rhs: Double)
 }
 
+extension simd_quatd: Codable {
+}
 
 extension double3x3 {
     public init(_ quatd: simd_quatd) {
