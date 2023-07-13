@@ -260,6 +260,15 @@ extension SIMD4 where Scalar: FixedWidthInteger {
     
 }
 
+extension SIMD4: Codable {
+    enum CodingKeys: String, CodingKey {
+        case x
+        case y
+        case z
+        case w
+    }
+}
+
 extension SIMD4 where Scalar: BinaryFloatingPoint {
     /// Creates a vector from another one
     public init<T: BinaryFloatingPoint>(_ v: SIMD4<T>) {

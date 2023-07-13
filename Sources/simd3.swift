@@ -238,6 +238,14 @@ extension SIMD3 where Scalar: FixedWidthInteger {
     }
 }
 
+extension SIMD3: Codable {
+    enum CodingKeys: String, CodingKey {
+        case x
+        case y
+        case z
+    }
+}
+
 extension SIMD3 where Scalar: BinaryFloatingPoint {
     /// Creates a vector from another one
     public init<T: BinaryFloatingPoint>(_ v: SIMD3<T>) {
