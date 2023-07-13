@@ -5,11 +5,6 @@
 //  Created by Damien Noël Dubuisson on 04/10/2021.
 //
 
-public extension SIMDScalar {
-    /// Returns the scalar 1.
-    static var one: Self { 1 }
-    
-}
 
 public extension FloatingPoint {
     /// Convert current degrees to radians

@@ -36,7 +36,7 @@ public func rsqrt<T: Real>(_ x: T) -> T { return T(1) / T.sqrt(x) }
 
 // MARK: - simd_double3/simd_float3
 public func length_squared<T: Real>(_ __x: SIMD3<T>) -> T {simd_length_squared(__x)}
-public func simd_length_squared<T>(_ __x: SIMD3<T>) -> T {
+public func simd_length_squared<T: Real>(_ __x: SIMD3<T>) -> T {
     return __x.x*__x.x + __x.y*__x.y + __x.z*__x.z
 }
 
