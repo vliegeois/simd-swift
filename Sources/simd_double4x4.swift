@@ -11,7 +11,7 @@
 
 public typealias double4x4 = simd_double4x4
 
-public struct simd_double4x4: Equatable {
+public struct simd_double4x4: Equatable, Sendable {
     public var columns: (simd_double4, simd_double4, simd_double4, simd_double4)
 
     /// Creates a matrix with zero in all columns.

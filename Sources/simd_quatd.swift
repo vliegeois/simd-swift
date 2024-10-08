@@ -15,7 +15,7 @@
 
 import Numerics
 
-public struct simd_quatd: Equatable {
+public struct simd_quatd: Equatable, Sendable {
     public var vector: simd_double4
 
     /// Creates a quaternion with zero in all lanes.
