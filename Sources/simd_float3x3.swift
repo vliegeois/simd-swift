@@ -1,0 +1,267 @@
+//
+//  simd_float3x3.swift
+//  simd-swift
+//
+//  Created by Vincent LIEGEOIS on 16/09/2025.
+//
+
+
+public typealias float3x3 = simd_float3x3
+
+public struct simd_float3x3: Equatable, Sendable {
+    public var columns: (simd_float3, simd_float3, simd_float3)
+
+    /// Creates a matrix with zero in all columns.
+    public init() {
+        columns = (.zero, .zero, .zero)
+    }
+
+    public init(columns: (simd_float3, simd_float3, simd_float3)) {
+        self.columns = columns
+    }
+
+    /// Initialize matrix to have `scalar` on main diagonal, zeros elsewhere.
+    public init(_ scalar: Float) {
+        columns = (.init(x: scalar, y: .zero, z: .zero),
+                   .init(x: .zero, y: scalar, z: .zero),
+                   .init(x: .zero, y: .zero, z: scalar))
+    }
+
+    /// Initialize matrix to have specified `diagonal`, and zeros elsewhere.
+    public init(diagonal: SIMD3<Float>) {
+        columns = (.init(x: diagonal.x, y: .zero, z: .zero),
+                   .init(x: .zero, y: diagonal.y, z: .zero),
+                   .init(x: .zero, y: .zero, z: diagonal.z))
+    }
+
+    /// Initialize matrix to have specified `columns`.
+    public init(_ columns: [SIMD3<Float>]) {
+        var colArray = columns
+        guard let col0 = colArray.safeRemoveFirst() else {
+            self = .init()
+            return
+        }
+        guard let col1 = colArray.safeRemoveFirst() else {
+            self = .init(col0, .zero, .zero)
+            return
+        }
+        guard let col2 = colArray.safeRemoveFirst() else {
+            self = .init(col0, col1, .zero)
+            return
+        }
+        self.columns = (col0, col1, col2)
+    }
+
+    /// Initialize matrix to have specified `rows`.
+    public init(rows: [SIMD3<Float>]) {
+        var rowArray = rows
+        guard let row0 = rowArray.safeRemoveFirst() else {
+            self = .init()
+            return
+        }
+        guard let row1 = rowArray.safeRemoveFirst() else {
+            columns = (.init(x: row0.x, y: .zero, z: .zero),
+                       .init(x: row0.y, y: .zero, z: .zero),
+                       .init(x: row0.z, y: .zero, z: .zero))
+            return
+        }
+        guard let row2 = rowArray.safeRemoveFirst() else {
+            columns = (.init(x: row0.x, y: row1.x, z: .zero),
+                       .init(x: row0.y, y: row1.y, z: .zero),
+                       .init(x: row0.z, y: row1.z, z: .zero))
+            return
+        }
+        columns = (.init(x: row0.x, y: row1.x, z: row2.x),
+                   .init(x: row0.y, y: row1.y, z: row2.y),
+                   .init(x: row0.z, y: row1.z, z: row2.z))
+    }
+
+    internal init(_ floats: [Float]) {
+        guard floats.count >= 9 else {
+            self = .init(floats.fill(.zero, to: 9))
+            return
+        }
+        columns = (.init(x: floats[0], y: floats[1], z: floats[2]),
+                   .init(x: floats[3], y: floats[4], z: floats[5]),
+                   .init(x: floats[6], y: floats[7], z: floats[8]))
+    }
+
+    /// Initialize matrix to have specified `columns`.
+    public init(_ col0: SIMD3<Float>, _ col1: SIMD3<Float>, _ col2: SIMD3<Float>) {
+        columns = (col0, col1, col2)
+    }
+
+    /// Access to individual columns.
+    public subscript(column: Int) -> SIMD3<Float> {
+        get {
+            switch column {
+            case 0: return columns.0
+            case 1: return columns.1
+            case 2: return columns.2
+            default: return .zero
+            }
+        }
+        set {
+            switch column {
+            case 0: columns.0 = newValue
+            case 1: columns.1 = newValue
+            case 2: columns.2 = newValue
+            default: return
+            }
+        }
+    }
+
+    /// Access to individual elements.
+    public subscript(column: Int, row: Int) -> Float {
+        get {
+            switch column {
+            case 0: return columns.0[row]
+            case 1: return columns.1[row]
+            case 2: return columns.2[row]
+            default: return .zero
+            }
+        }
+        set {
+            switch column {
+            case 0: columns.0[row] = newValue
+            case 1: columns.1[row] = newValue
+            case 2: columns.2[row] = newValue
+            default: return
+            }
+        }
+    }
+    
+    /// Transpose of the matrix.
+    public var transpose: simd_float3x3 {
+        simd_float3x3(SIMD3(x: self[0, 0], y: self[1, 0], z: self[2, 0]), SIMD3(x: self[0, 1], y: self[1, 1], z: self[2, 1]), SIMD3(x: self[0, 2], y: self[1, 2], z: self[2, 2]))
+    }
+
+    /// Inverse of the matrix if it exists, otherwise the contents of the
+    /// resulting matrix are undefined.
+    public var inverse: simd_float3x3 {
+        let invdet = 1 / determinant
+        var minv = simd_float3x3()
+        minv[0, 0] = (self[1, 1] * self[2, 2] - self[2, 1] * self[1, 2]) * invdet;
+        minv[0, 1] = (self[0, 2] * self[2, 1] - self[0, 1] * self[2, 2]) * invdet;
+        minv[0, 2] = (self[0, 1] * self[1, 2] - self[0, 2] * self[1, 1]) * invdet;
+        minv[1, 0] = (self[1, 2] * self[2, 0] - self[1, 0] * self[2, 2]) * invdet;
+        minv[1, 1] = (self[0, 0] * self[2, 2] - self[0, 2] * self[2, 0]) * invdet;
+        minv[1, 2] = (self[1, 0] * self[0, 2] - self[0, 0] * self[1, 2]) * invdet;
+        minv[2, 0] = (self[1, 0] * self[2, 1] - self[2, 0] * self[1, 1]) * invdet;
+        minv[2, 1] = (self[2, 0] * self[0, 1] - self[0, 0] * self[2, 1]) * invdet;
+        minv[2, 2] = (self[0, 0] * self[1, 1] - self[1, 0] * self[0, 1]) * invdet;
+        return minv
+    }
+
+    /// Determinant of the matrix.
+    public var determinant: Float {
+        self[0, 0] * (self[1, 1] * self[2, 2] - self[1, 2] * self[2, 1])
+        - self[1, 0] * (self[0, 1] * self[2, 2] - self[2, 1] * self[0, 2])
+        + self[2, 0] * (self[0, 1] * self[1, 2] - self[1, 1] * self[0, 2])
+    }
+
+    /// Returns a Boolean value indicating whether two values are equal.
+    ///
+    /// Equality is the inverse of inequality. For any values `a` and `b`,
+    /// `a == b` implies that `a != b` is `false`.
+    ///
+    /// - Parameters:
+    ///   - lhs: A value to compare.
+    ///   - rhs: Another value to compare.
+    public static func == (lhs: simd_float3x3, rhs: simd_float3x3) -> Bool {
+        let lc = lhs.columns
+        let rc = rhs.columns
+        return lc.0.x == rc.0.x && lc.0.y == rc.0.y && lc.0.z == rc.0.z &&
+               lc.1.x == rc.1.x && lc.1.y == rc.1.y && lc.1.z == rc.1.z &&
+               lc.2.x == rc.2.x && lc.2.y == rc.2.y && lc.2.z == rc.2.z
+    }
+
+    /// Sum of two matrices.
+    public static func + (lhs: simd_float3x3, rhs: simd_float3x3) -> simd_float3x3 {
+        let lc = lhs.columns
+        let rc = rhs.columns
+        let col0 = simd_float3(x: lc.0.x + rc.0.x, y: lc.0.y + rc.0.y, z: lc.0.z + rc.0.z)
+        let col1 = simd_float3(x: lc.1.x + rc.1.x, y: lc.1.y + rc.1.y, z: lc.1.z + rc.1.z)
+        let col2 = simd_float3(x: lc.2.x + rc.2.x, y: lc.2.y + rc.2.y, z: lc.2.z + rc.2.z)
+        return .init(col0, col1, col2)
+    }
+
+    /// Negation of a matrix.
+    prefix public static func - (rhs: simd_float3x3) -> simd_float3x3 {
+        let rc = rhs.columns
+        return .init(.init(x: -rc.0.x, y: -rc.0.y, z: -rc.0.z),
+                     .init(x: -rc.1.x, y: -rc.1.y, z: -rc.1.z),
+                     .init(x: -rc.2.x, y: -rc.2.y, z: -rc.2.z))
+    }
+
+    /// Difference of two matrices.
+    public static func - (lhs: simd_float3x3, rhs: simd_float3x3) -> simd_float3x3 {
+        let lc = lhs.columns
+        let rc = rhs.columns
+        let col0 = simd_float3(x: lc.0.x - rc.0.x, y: lc.0.y - rc.0.y, z: lc.0.z - rc.0.z)
+        let col1 = simd_float3(x: lc.1.x - rc.1.x, y: lc.1.y - rc.1.y, z: lc.1.z - rc.1.z)
+        let col2 = simd_float3(x: lc.2.x - rc.2.x, y: lc.2.y - rc.2.y, z: lc.2.z - rc.2.z)
+        return .init(col0, col1, col2)
+    }
+
+    public static func += (lhs: inout simd_float3x3, rhs: simd_float3x3) {
+        lhs = lhs + rhs
+    }
+
+    public static func -= (lhs: inout simd_float3x3, rhs: simd_float3x3) {
+        lhs = lhs - rhs
+    }
+
+    /// Scalar-Matrix multiplication.
+    public static func * (lhs: Float, rhs: simd_float3x3) -> simd_float3x3 {
+        return rhs * lhs
+    }
+
+    /// Matrix-Scalar multiplication.
+    public static func * (lhs: simd_float3x3, rhs: Float) -> simd_float3x3 {
+        let lc = lhs.columns
+        let col0 = simd_float3(x: lc.0.x * rhs, y: lc.0.y * rhs, z: lc.0.z * rhs)
+        let col1 = simd_float3(x: lc.1.x * rhs, y: lc.1.y * rhs, z: lc.1.z * rhs)
+        let col2 = simd_float3(x: lc.2.x * rhs, y: lc.2.y * rhs, z: lc.2.z * rhs)
+        return .init(col0, col1, col2)
+    }
+
+    public static func *= (lhs: inout simd_float3x3, rhs: Float) {
+        lhs = lhs * rhs
+    }
+
+    /// Matrix-Vector multiplication.  Keep in mind that matrix types are named
+    /// `DoubleNxM` where `N` is the number of *columns* and `M` is the number of
+    /// *rows*, so we multiply a `Double3x2 * Double3` to get a `Double2`, for
+    /// example.
+    public static func * (lhs: simd_float3x3, rhs: SIMD3<Float>) -> SIMD3<Float> {
+        return .init(x: lhs[0, 0] * rhs.x + lhs[1, 0] * rhs.y + lhs[2, 0] * rhs.z,
+                     y: lhs[0, 1] * rhs.x + lhs[1, 1] * rhs.y + lhs[2, 1] * rhs.z,
+                     z: lhs[0, 2] * rhs.x + lhs[1, 2] * rhs.y + lhs[2, 2] * rhs.z)
+    }
+
+    /// Vector-Matrix multiplication.
+    public static func * (lhs: SIMD3<Float>, rhs: simd_float3x3) -> SIMD3<Float> {
+        return rhs * lhs
+    }
+
+    /// Matrix multiplication (the "usual" matrix product, not the elementwise
+    /// product).
+    public static func * (lhs: simd_float3x3, rhs: simd_float3x3) -> simd_float3x3 {
+        return .init([lhs[0, 0] * rhs[0, 0] + lhs[1, 0] * rhs[0, 1] + lhs[2, 0] * rhs[0, 2],
+                      lhs[0, 1] * rhs[0, 0] + lhs[1, 1] * rhs[0, 1] + lhs[2, 1] * rhs[0, 2],
+                      lhs[0, 2] * rhs[0, 0] + lhs[1, 2] * rhs[0, 1] + lhs[2, 2] * rhs[0, 2],
+                      lhs[0, 0] * rhs[1, 0] + lhs[1, 0] * rhs[1, 1] + lhs[2, 0] * rhs[1, 2],
+                      lhs[0, 1] * rhs[1, 0] + lhs[1, 1] * rhs[1, 1] + lhs[2, 1] * rhs[1, 2],
+                      lhs[0, 2] * rhs[1, 0] + lhs[1, 2] * rhs[1, 1] + lhs[2, 2] * rhs[1, 2],
+                      lhs[0, 0] * rhs[2, 0] + lhs[1, 0] * rhs[2, 1] + lhs[2, 0] * rhs[2, 2],
+                      lhs[0, 1] * rhs[2, 0] + lhs[1, 1] * rhs[2, 1] + lhs[2, 1] * rhs[2, 2],
+                      lhs[0, 2] * rhs[2, 0] + lhs[1, 2] * rhs[2, 1] + lhs[2, 2] * rhs[2, 2]])
+    }
+
+    /// Matrix multiplication (the "usual" matrix product, not the elementwise
+    /// product).
+    public static func *= (lhs: inout simd_float3x3, rhs: simd_float3x3) {
+        lhs = lhs * rhs
+    }
+}
