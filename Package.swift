@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version:6.2
 
 import PackageDescription
 
@@ -21,7 +21,12 @@ let package = Package(
         .target(
             name: "SimdSwift",
             dependencies: [.product(name: "Numerics", package: "swift-numerics"),],
-            path: "Sources"),
+            path: "Sources",
+            swiftSettings: [
+                .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                .enableUpcomingFeature("InferIsolatedConformances"),
+              ]
+        ),
         .testTarget(
             name: "SimdSwiftTests",
             dependencies: ["SimdSwift"],
